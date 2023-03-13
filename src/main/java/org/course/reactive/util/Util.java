@@ -23,8 +23,12 @@ public class Util {
     }
 
     public static void sllepSeconds(int seconds){
+            sllepMillis(seconds * 1000 );
+    }
+
+    public static void sllepMillis(int millis){
         try {
-            Thread.sleep(seconds * 1000 );
+            Thread.sleep(millis);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

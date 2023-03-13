@@ -1,0 +1,47 @@
+package org.course.reactive.task.lessons7;
+
+import org.course.reactive.util.Util;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
+import reactor.core.scheduler.Schedulers;
+
+public class BufferWithSizeStrategy {
+
+    public static void main(String[] args) {
+
+
+        //Queues
+        //75% 12
+        System.setProperty("reactor.bufferSize.small", "16");
+
+
+          Flux.create(fluxSink -> {
+                    printThreadName("create");
+                    for (int i = 1; i < 201 && !fluxSink.isCancelled(); i++) {
+                        fluxSink.next(i);
+                        System.out.println("Pushed : " + i);
+                        Util.sllepMillis(1);
+                    }
+                  // fluxSink.complete();
+                }
+                //, FluxSink.OverflowStrategy.BUFFER
+                  )
+               //   .onBackpressureLatest()
+               //   .onBackpressureDrop()
+               //   .onBackpressureError()
+                  .onBackpressureBuffer(50 ,o-> System.out.println("Drooped : " + o))
+                .publishOn(Schedulers.boundedElastic())
+                .doOnNext(i-> {
+                    Util.sllepMillis(10);
+                }) //bad example
+                        .subscribe(Util.subscriber());
+
+
+
+        Util.sllepSeconds(10);
+    }
+
+    public static void printThreadName(String msg){
+        System.out.println(msg + " \t\t: Thread : " +Thread.currentThread().getName());
+    }
+}

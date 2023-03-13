@@ -21,19 +21,19 @@ public class DefaultSubscriber implements Subscriber<Object> {
 
     @Override
     public void onNext(Object o) {
-        System.out.println(name + "Recevied : " + o);
+        System.out.println(name + " Recevied : " + o);
 
     }
 
     @Override
     public void onError(Throwable throwable) {
-        System.out.println(name + "ERORR : " + throwable.getMessage());
+        System.out.println(name + " ERORR : " + throwable.getMessage());
 
     }
 
     @Override
     public void onComplete() {
-        System.out.println(name + "Completed");
+        System.out.println(name + " Completed ");
 
     }
 }

@@ -1,11 +1,13 @@
 package org.course.reactive.task.lessons4.helper;
 
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 
 //database mock
 public class OrderService {
@@ -28,10 +30,24 @@ public class OrderService {
 
     }
 
+   //get from DB
+    //public static Flux<Object> getOrders(int userId){ use Flux
+    //FluxSink<PurchaseOrder> use if return Flux<PurchaseOrder>
     public static Flux<PurchaseOrder> getOrders(int userId){
-        return Flux.create(purchaseOrderFluxSink -> {
+        return Flux.create((FluxSink<PurchaseOrder> purchaseOrderFluxSink ) -> {
             db.get(userId).forEach(purchaseOrderFluxSink::next);
-        });
+            purchaseOrderFluxSink.complete();
+        })
+                .delayElements(Duration.ofMillis(1000));
+    }
+
+
+    public static Flux<Object> getOrdersObjets(int userId){
+        return Flux.create((purchaseOrderFluxSink ) -> {
+            db.get(userId).forEach(purchaseOrderFluxSink::next);
+            purchaseOrderFluxSink.complete();
+        })
+         .delayElements(Duration.ofMillis(1000));//+ change return to Objects
     }
 
 }
